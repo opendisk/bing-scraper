@@ -1,0 +1,28 @@
+{
+    "name": "opendisk/bing-scraper",
+    "type": "library",
+	"description": "Bing scraper for Text, Image, Video",
+	"license": "MIT",
+    "authors": [
+        {
+            "name": "Mochammad Masbuchin",
+            "email": "buchin@dropsugar.com"
+        }
+    ],
+	"require": {
+		"php": "^7.3|^8.0",
+		"guzzlehttp/guzzle": "^7.4",
+        "symfony/dom-crawler": "^5.3",
+        "symfony/css-selector": "^5.3"
+	},
+    "require-dev": {
+        "kahlan/kahlan": "^5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Opendisk\\Bing\\": "src/"
+        }
+    },
+	"minimum-stability": "dev",
+	"prefer-stable": true
+}
