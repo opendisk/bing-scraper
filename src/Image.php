@@ -28,32 +28,30 @@ class Image extends Bing
 
     public function parseContent()
     {
-        $results = $this->crawler
-            ->filter(".imgpt")
-            ->each(function (Crawler $node, $i) {
-                $json = @json_decode($node->filter("a.iusc")->attr("m"));
-                try {
-                    $size = $node->filter("div.img_info span.nowrap")->html();
-                } catch (\InvalidArgumentException $e) {
-                    // I guess its InvalidArgumentException in this case
-                    $size = "0 x 0";
-                }
+        $results = $this->crawler->filter(".imgpt")->each(function (Crawler $node, $i) {
+            $json = @json_decode($node->filter("a.iusc")->attr("m"));
+            
+            try {
+                $size = $node->filter("div.img_info span.nowrap")->html();
+            } catch (\InvalidArgumentException $e) {
+                // I guess its InvalidArgumentException in this case
+                $size = "0 x 0";
+            }
 
-                $raw_image = [
-                    "mediaurl" => $json->murl,
-                    "link" => $json->purl,
-                    "title" => str_replace(["", "", " ..."], "", $json->t),
-                    "thumbnail" => $json->turl,
-                    "size" => $size,
-                ];
-                return $raw_image;
-            });
+            $raw_image = [
+                "mediaurl" => $json->murl,
+                "link" => $json->purl,
+                "title" => str_replace(["", "", " ..."], "", $json->t),
+                "thumbnail" => $json->turl,
+                "size" => $size,
+            ];
+            
+        return $raw_image;
+        });
 
-        $related = $this->crawler
-            ->filter("a > div.cardInfo > div > strong")
-            ->each(function (Crawler $node, $i) {
-                return $node->text();
-            });
+        $related = $this->crawler->filter("a > div.cardInfo > div > strong")->each(function (Crawler $node, $i) {
+            return $node->text();
+        });
 
         $results = $this->postProcessImage($results);
 
@@ -75,22 +73,11 @@ class Image extends Bing
 
     public function postProcessSingleImage($raw_image, $delimiter = "·")
     {
-        $raw_image["filetype"] = trim(
-            @explode($delimiter, $raw_image["size"])[1]
-        );
-        $raw_image["filetype"] =
-            $raw_image["filetype"] == "jpeg" ? "jpg" : $raw_image["filetype"];
-        $raw_image["filetype"] =
-            $raw_image["filetype"] == "animatedgif" ? "gif" : $raw_image["filetype"];
-
-        $raw_image["width"] = explode(
-            " x ",
-            @explode($delimiter, $raw_image["size"])[0]
-        )[0];
-        $raw_image["height"] = explode(
-            " x ",
-            @explode($delimiter, $raw_image["size"])[0]
-        )[1];
+        $raw_image["filetype"] = trim(@explode($delimiter, $raw_image["size"])[1]);
+        $raw_image["filetype"] = $raw_image["filetype"] == "jpeg" ? "jpg" : $raw_image["filetype"];
+        $raw_image["filetype"] = $raw_image["filetype"] == "animatedgif" ? "gif" : $raw_image["filetype"];
+        $raw_image["width"] = explode(" x ", @explode($delimiter, $raw_image["size"])[0])[0];
+        $raw_image["height"] = explode(" x ", @explode($delimiter, $raw_image["size"])[0])[1];
         $raw_image["domain"] = parse_url($raw_image["link"], PHP_URL_HOST);
 
         return $raw_image;
