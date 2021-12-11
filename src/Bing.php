@@ -115,7 +115,7 @@ class Bing
     public function buildOptions($options)
     {
         $this->options = $options;
-        $type = strtolower(str_replace("Buchin\Bing\\", "", get_class($this)));
+        $type = strtolower(str_replace("Opendisk\Bing\\", "", get_class($this)));
 
         $filters = [];
 
