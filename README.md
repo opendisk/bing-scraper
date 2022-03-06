@@ -1,6 +1,13 @@
 ## Bing Scraper
 Bing Scraper for text, image, and video
 
+### Installation
+Install using composer:
+
+```bash
+composer require opendisk/bing-scraper
+```
+
 ### usage
 
 #### Text example
